@@ -124,7 +124,11 @@ ToDoApp/
    ```
 
 3. **APIキーの設定**
-   - `lib/widgets/weather.dart` の `apiKey` に取得したAPIキーを記載してください．
+   - プロジェクトルートに `.env` ファイルを作成し、下記のようにAPIキーを記載してください。
+     ```
+     API_KEY=あなたのOpenWeatherMapのAPIキー
+     ```
+   - `.env` ファイルはGit管理対象外です（`.gitignore`に追加済み）。
 
 4. **デバイス確認**
    ```bash
