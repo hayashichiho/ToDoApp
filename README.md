@@ -73,7 +73,7 @@ ToDoApp/
 │   │   └── weather.dart         # 天気モデル
 │   ├── screens/
 │   │   ├── add_todo_screen.dart # タスク追加画面
-│   │   ├── list_screen.dart     # タスクリスト画面
+│   │   └── list_screen.dart     # タスクリスト画面
 │   ├── widgets/
 │   │   ├── todo_item.dart       # タスクアイテム
 │   │   └── weather.dart         # 天気ウィジェット（OpenWeatherMap API対応）
