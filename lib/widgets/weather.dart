@@ -1,10 +1,8 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:yumemi_weather/yumemi_weather.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// 天気情報を表示するウィジェット
 class Weather extends StatefulWidget {
   const Weather({super.key});
 
@@ -12,7 +10,6 @@ class Weather extends StatefulWidget {
   State<Weather> createState() => _WeatherState();
 }
 
-// Weatherの状態を管理するStateクラス
 class _WeatherState extends State<Weather> {
   String? _weather;
   String? _temperature;
@@ -25,26 +22,30 @@ class _WeatherState extends State<Weather> {
   }
 
   Future<void> fetchWeather() async {
+    final apiKey = dotenv.env['API_KEY'];
+    const lat = '35.6828387';
+    const lon = '139.7594549';
+    final url =
+        'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric&lang=ja';
+
     try {
-      final yumemiWeather = YumemiWeather();
-      final areaJson = jsonEncode({
-        'area': 'tokyo', // 天気を取得する地域
-      });
-      final result = yumemiWeather.fetchWeather(areaJson);
-      final Map<String, dynamic> json = jsonDecode(result);
-      setState(() {
-        _weather = json['weatherCondition']; // 晴れ/曇り/雨
-        _temperature = '${json['temperature']}℃';
-        _error = null;
-      });
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        setState(() {
+          _weather = json['weather'][0]['main'];
+          _temperature = '${json['main']['temp']}℃';
+          _error = null;
+        });
+      } else {
+        setState(() {
+          _error = '天気取得エラー: ${response.statusCode}';
+        });
+      }
     } catch (e) {
       setState(() {
         _error = '天気取得エラー';
       });
-      // デバッグ用にエラーをコンソールに出力
-      if (kDebugMode) {
-        print('Weather fetch error: $e');
-      }
     }
   }
 

@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart'; // Flutterの基本パッケージ
-import 'package:shared_preferences/shared_preferences.dart'; // 端末にデータを保存するためのパッケージ
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'screens/list_screen.dart';
 import 'services/todo_service.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Flutterの初期化
-  final prefs =
-      await SharedPreferences.getInstance(); // SharedPreferences のインスタンスを取得
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env"); // ← ファイル名を明示
+  print('API_KEY: ${dotenv.env['API_KEY']}'); // デバッグ用
 
-  final todoService = TodoService(prefs); // Todoserviceのインスタンスを作成
-
-  runApp(MyApp(todoService: todoService)); // MyApp を起動
+  final prefs = await SharedPreferences.getInstance();
+  final todoService = TodoService(prefs);
+  runApp(MyApp(todoService: todoService));
 }
 
 class MyApp extends StatelessWidget {
